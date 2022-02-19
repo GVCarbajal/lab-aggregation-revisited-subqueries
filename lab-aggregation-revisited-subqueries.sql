@@ -4,7 +4,7 @@ use sakila;
 
 select distinct c.first_name, c.last_name, c.email from rental r
 join customer c on r.customer_id = c.customer_id
-order by r.customer_id;
+order by c.first_name;
 
 -- What is the average payment made by each customer (display the customer id, customer name (concatenated), and the average payment made).
 
@@ -21,7 +21,7 @@ join inventory i on r.inventory_id = i.inventory_id
 join film_category fc on i.film_id = fc.film_id
 join category cat on fc.category_id = cat.category_id
 where cat.name = 'Action'
-order by r.customer_id;
+order by customer_name;
 
 -- Write the query using sub queries with multiple WHERE clause and IN condition.
 select distinct concat(first_name, ' ', last_name) customer_name, email from customer
@@ -34,7 +34,7 @@ where customer_id in (
             where category_id in (
 				select category_id from category
                 where name = 'Action'
-)))) order by customer_id;
+)))) order by customer_name;
 
 /* Use the case statement to create a new column classifying existing columns as either or high value transactions 
 based on the amount of payment. 
@@ -49,3 +49,8 @@ case
     when amount > 4 then 'high'
 end value_trans
 from payment;
+
+
+-- Cristian detected that ONLY_FULL_GROUP_BY is disabled, which can generate errors when aggregating. Enable it
+
+SET sql_mode = 'ONLY_FULL_GROUP_BY';
